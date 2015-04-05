@@ -1,0 +1,16 @@
+[
+{
+  "modid": "MyShops",
+  "name": "MyShops",
+  "description": "Sign Shops!",
+  "version": "${mod_version}",
+  "mcversion": "${minecraft_version}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": [
+    "Legobear154",
+	 "AfterWind"
+  ],
+  "credits": "Legobear154 and AfterWind"
+}
+]
