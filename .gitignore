@@ -1,8 +1,23 @@
+#eclipse
+.project
+.classpath
+.metadata
+org.*
+bin
+
+#idea
+*.iml
+*.ipr
+*.iws
+.idea
+out
+
+#gradle
+build
 .gradle
-build/
 
-# Ignore Gradle GUI config
-gradle-app.setting
+#runtime
+run
 
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
+#mac
+.DS_Store
