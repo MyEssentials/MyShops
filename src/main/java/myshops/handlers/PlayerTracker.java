@@ -8,6 +8,7 @@ import myshops.storage.entities.Shop;
 import myshops.storage.entities.ShopType;
 import myshops.storage.StorageHandler;
 import mytown.core.ChatUtils;
+import mytown.core.Localization;
 import mytown.core.Utils;
 import mytown.core.utils.PlayerUtils;
 import net.minecraft.block.Block;
@@ -52,11 +53,12 @@ public class PlayerTracker {
 
                 NBTTagList tagList = currentStack.getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
                 int amount = Integer.parseInt(tagList.getStringTagAt(0).split(" ")[1]);
-                int price = Integer.parseInt(tagList.getStringTagAt(0).split(" ")[3]);
+                int buyPrice = Integer.parseInt(tagList.getStringTagAt(0).split(" ")[3]);
+                int sellPrice = Integer.parseInt(tagList.getStringTagAt(0).split(" ")[5]);
                 ShopType shopType = ShopType.fromString(tagList.getStringTagAt(1).split(" ")[1]);
                 String itemString = tagList.getStringTagAt(2).split(" ")[1];
 
-                Shop shop = new Shop(itemString, amount, price, price, shopType, ev.world.provider.dimensionId, x, y, z); // TODO Separate buy and sell prices
+                Shop shop = new Shop(itemString, amount, buyPrice, sellPrice, shopType, ev.world.provider.dimensionId, x, y, z);
                 StorageHandler.instance().addShop(shop);
 
                 String[] signText = new String[4];
@@ -69,8 +71,18 @@ public class PlayerTracker {
                 for(int i = 0; i < (15 - signText[1].length()) / 2; i++)
                     signText[1] = " " + signText[1];
 
-                signText[2] = "" + EnumChatFormatting.GOLD + price;
+                signText[2] = " ";
                 signText[3] = " ";
+
+                if (shop.type.canBuy()) {
+                    signText[2] = "B " + EnumChatFormatting.GOLD + buyPrice + " ";
+
+                    if (shop.type.canSell()) {
+                        signText[3] = "S " + EnumChatFormatting.GOLD + sellPrice + " ";
+                    }
+                } else if (shop.type.canSell()) {
+                    signText[2] = "S " + EnumChatFormatting.GOLD + sellPrice + " ";
+                }
 
                 te.signText = signText;
             }
@@ -90,21 +102,21 @@ public class PlayerTracker {
                 Shop shop = StorageHandler.instance().getShop(ev.world.provider.dimensionId, ev.x, ev.y, ev.z);
                 if (shop == null) return;
 
-                // Left Click Buy
-                if (ev.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
-                    if(EconomyProxy.economy().takeMoneyFromPlayer(ev.entityPlayer, shop.buyPrice)) {
-                        PlayerUtils.giveItemToPlayer(ev.entityPlayer, shop.itemStack, shop.getAmount());
-                        ChatUtils.sendChat(ev.entityPlayer, LocalizationProxy.getLocalization().getLocalization("myshops.notification.shop.buy.success", shop.getAmount(), shop.itemStack.getDisplayName(), shop.buyPrice, EconomyProxy.economy().getCurrency(shop.buyPrice)));
-                    } else {
-                        ChatUtils.sendChat(ev.entityPlayer, LocalizationProxy.getLocalization().getLocalization("myshops.notification.shop.buy.failed", shop.buyPrice, EconomyProxy.economy().getCurrency(shop.buyPrice)));
-                    }
-                // Right Click Sell
-                } else if (ev.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+                // Right click to sell
+                if(ev.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && shop.type.canSell()) {
                     if(PlayerUtils.takeItemFromPlayer(ev.entityPlayer, shop.itemStack, shop.getAmount())) {
                         EconomyProxy.economy().giveMoneyToPlayer(ev.entityPlayer, shop.sellPrice);
-                        ChatUtils.sendChat(ev.entityPlayer, LocalizationProxy.getLocalization().getLocalization("myshops.notification.shop.sell.success", shop.getAmount(), shop.itemStack.getDisplayName(), shop.sellPrice, EconomyProxy.economy().getCurrency(shop.sellPrice)));
+                        ChatUtils.sendLocalizedChat(ev.entityPlayer, LocalizationProxy.getLocalization(), "myshops.notification.shop.sell.success", shop.getAmount(), shop.itemStack.getDisplayName(), shop.sellPrice, EconomyProxy.economy().getCurrency(shop.sellPrice));
                     } else {
-                        ChatUtils.sendChat(ev.entityPlayer, LocalizationProxy.getLocalization().getLocalization("myshops.notification.shop.sell.failed", shop.getAmount(), shop.itemStack.getDisplayName(), shop.sellPrice, EconomyProxy.economy().getCurrency(shop.sellPrice)));
+                        ChatUtils.sendLocalizedChat(ev.entityPlayer, LocalizationProxy.getLocalization(), "myshops.notification.shop.sell.failed", shop.getAmount(), shop.itemStack.getDisplayName(), shop.sellPrice, EconomyProxy.economy().getCurrency(shop.sellPrice));
+                    }
+                    // Left click to buy if shoptype is sellbuy and right click if not.
+                } else if(ev.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && shop.type == ShopType.sellBuy || ev.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && shop.type == ShopType.buy) {
+                    if(EconomyProxy.economy().takeMoneyFromPlayer(ev.entityPlayer, shop.buyPrice)) {
+                        PlayerUtils.giveItemToPlayer(ev.entityPlayer, shop.itemStack, shop.getAmount());
+                        ChatUtils.sendLocalizedChat(ev.entityPlayer, LocalizationProxy.getLocalization(), "myshops.notification.shop.buy.success", shop.getAmount(), shop.itemStack.getDisplayName(), shop.buyPrice, EconomyProxy.economy().getCurrency(shop.buyPrice));
+                    } else {
+                        ChatUtils.sendLocalizedChat(ev.entityPlayer, LocalizationProxy.getLocalization(), "myshops.notification.shop.buy.failed", shop.buyPrice, EconomyProxy.economy().getCurrency(shop.buyPrice));
                     }
                 }
 

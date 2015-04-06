@@ -3,6 +3,7 @@ package myshops;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.*;
+import myshops.commands.CommandsAdmin;
 import myshops.commands.CommandsEveryone;
 import myshops.handlers.PlayerTracker;
 import myshops.proxies.LocalizationProxy;
@@ -34,7 +35,8 @@ public class MyShops {
 
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent ev) {
-        CommandManager.registerCommands(CommandsEveryone.class);
+        CommandManager.registerCommands(CommandsAdmin.class);
+        //CommandManager.registerCommands(CommandsEveryone.class);
 
         StorageHandler.instance().load(); // TODO Move this if necessary
     }

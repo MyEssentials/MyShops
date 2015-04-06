@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class LocalizationProxy {
-    private static Logger logger = LogManager.getLogger("MyTown2.Localization");
+    private static Logger logger = LogManager.getLogger("MyShops.Localization");
     private static Localization localization;
 
     /**
