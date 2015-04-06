@@ -4,12 +4,23 @@ notifications:
   email: false
   irc:
     channels:
-      - "irc.esper.net#MyTown"
+    - irc.esper.net#MyTown
     template:
-      - "%{repository_name} (%{branch}): %{commit_message} - %{author}"
-      - "Result: %{result}"
-      - "Change view: %{compare_url}"
-      - "Build details: %{build_url}"
+    - "%{repository_name} (%{branch}): %{commit_message} - %{author}"
+    - 'Result: %{result}'
+    - 'Change view: %{compare_url}'
+    - 'Build details: %{build_url}'
 cache:
   directories:
-  - $HOME/.gradle/caches/
+  - "$HOME/.gradle/caches/"
+deploy:
+  provider: releases
+  api_key:
+    secure: dRwmHVpKluPTjxK+kx8NOkB2qhc8p2DFVJS2W8QG1yqLhkqjrTP9UC+SdpDqUoLGndwjZv+nhxWdKOBj8/KyNX8H0NsshuwHWOXJtHuPTYiog1tcyV4SnwhR7MZmPbyioUDcBuW9hhNr7p1bagj9gsmi8+Qzcxim80sdPIIyxFw=
+  file: build/libs/*
+  file_glob: true
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: MyEssentials/MyShops
+    all_branches: true
