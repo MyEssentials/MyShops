@@ -19,7 +19,10 @@ import net.minecraft.util.EnumChatFormatting;
 import java.util.List;
 
 public class CommandsAdmin extends Commands {
-    @Command(name = "myshopsadmin", permission = "myshops.adm.cmd", alias = {"ashops", "shopsadmin"})
+    @Command(
+            name = "myshopsadmin",
+            permission = "myshops.adm.cmd",
+            alias = {"myshops", "shop"})
     public static void shopsAdminCommand(ICommandSender sender, List<String> args) {
         callSubFunctions(sender, args, "myshops.adm.cmd");
     }
