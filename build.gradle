@@ -15,6 +15,13 @@ buildscript {
     }
 }
 
+repositories {
+    maven {
+        name = "bukkit-repo"
+        url = "http://repo.bukkit.org/content/groups/public/"
+    }
+}
+
 // Load Configs
 ext.configFile = file "build.properties"
 
@@ -50,6 +57,8 @@ minecraft {
 // Setup Deps
 dependencies {
     testCompile "junit:junit:4.11"
+    
+    compile project(":MyEssentials-Core")
 }
 
 // Process Resources, injecting version numbers in

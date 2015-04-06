@@ -1,0 +1,9 @@
+myshops.cmd.shop.itemname=&3The unique name of this item is: &c%s\n&3Add this as the costItem in your config to set the cost item.
+myshops.cmd.usage.shop.create=&3/shop create sell|buy|sellBuy <amount> <price>
+myshops.cmd.err.item=&cYou need to be holding an item in hand that will be used for the shop!
+
+# Notifications
+myshops.notification.shop.buy.success=&aYou have bought %s %s with %s %s.
+myshops.notification.shop.buy.failed=&cYou don't have %s %s!
+myshops.notification.shop.sell.success=&aYou have sold %s %s with %s %s.
+myshops.notification.shop.sell.failed=&cYou don't have %s %s!
